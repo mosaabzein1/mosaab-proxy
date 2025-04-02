@@ -75,19 +75,29 @@
             result.innerHTML = '';
 
             try {
-                // Create iframe directly
+                // Create iframe and set its source to a working proxy service
                 const iframe = document.createElement('iframe');
                 iframe.style.width = '100%';
                 iframe.style.height = '600px';
                 iframe.style.border = 'none';
                 
-                // Use a different proxy service
-                iframe.src = `https://cors-anywhere.herokuapp.com/${url}`;
+                // Using a more reliable proxy service
+                const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`;
                 
+                // Set up a listener for iframe load
+                iframe.onload = function() {
+                    loading.style.display = 'none';
+                };
+                
+                iframe.onerror = function() {
+                    result.innerHTML = 'Failed to load the page. Try another URL.';
+                    loading.style.display = 'none';
+                };
+
+                iframe.src = proxyUrl;
                 result.appendChild(iframe);
             } catch (error) {
                 result.innerHTML = `Error: ${error.message}`;
-            } finally {
                 loading.style.display = 'none';
             }
         }

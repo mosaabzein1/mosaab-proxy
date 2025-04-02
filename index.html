@@ -75,24 +75,15 @@
             result.innerHTML = '';
 
             try {
-                // Use a public CORS proxy service
-                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-                const response = await fetch(proxyUrl);
-                const html = await response.text();
-
-                // Create a sandboxed iframe to display the content
+                // Create iframe directly
                 const iframe = document.createElement('iframe');
                 iframe.style.width = '100%';
                 iframe.style.height = '600px';
                 iframe.style.border = 'none';
-                iframe.sandbox = 'allow-same-origin allow-scripts allow-popups allow-forms';
                 
-                // Write the HTML content to the iframe
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                iframeDoc.open();
-                iframeDoc.write(html);
-                iframeDoc.close();
-
+                // Use a different proxy service
+                iframe.src = `https://cors-anywhere.herokuapp.com/${url}`;
+                
                 result.appendChild(iframe);
             } catch (error) {
                 result.innerHTML = `Error: ${error.message}`;
@@ -102,4 +93,4 @@
         }
     </script>
 </body>
-</html> 
+</html>

@@ -75,16 +75,17 @@
             result.innerHTML = '';
 
             try {
-                // Create iframe and set its source to a working proxy service
+                // Using a different proxy service
+                const finalUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+                
+                // Create iframe
                 const iframe = document.createElement('iframe');
                 iframe.style.width = '100%';
                 iframe.style.height = '600px';
                 iframe.style.border = 'none';
+                iframe.sandbox = 'allow-same-origin allow-scripts allow-popups allow-forms';
                 
-                // Using a more reliable proxy service
-                const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`;
-                
-                // Set up a listener for iframe load
+                // Set up listeners
                 iframe.onload = function() {
                     loading.style.display = 'none';
                 };
@@ -94,7 +95,8 @@
                     loading.style.display = 'none';
                 };
 
-                iframe.src = proxyUrl;
+                // Load the URL
+                iframe.src = finalUrl;
                 result.appendChild(iframe);
             } catch (error) {
                 result.innerHTML = `Error: ${error.message}`;

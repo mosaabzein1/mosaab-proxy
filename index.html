@@ -61,7 +61,7 @@
     </div>
 
     <script>
-        async function proxyRequest() {
+        function proxyRequest() {
             const url = document.getElementById('url').value;
             const loading = document.getElementById('loading');
             const result = document.getElementById('result');
@@ -74,34 +74,26 @@
             loading.style.display = 'block';
             result.innerHTML = '';
 
-            try {
-                // Using a different proxy service
-                const finalUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-                
-                // Create iframe
-                const iframe = document.createElement('iframe');
-                iframe.style.width = '100%';
-                iframe.style.height = '600px';
-                iframe.style.border = 'none';
-                iframe.sandbox = 'allow-same-origin allow-scripts allow-popups allow-forms';
-                
-                // Set up listeners
-                iframe.onload = function() {
-                    loading.style.display = 'none';
-                };
-                
-                iframe.onerror = function() {
-                    result.innerHTML = 'Failed to load the page. Try another URL.';
-                    loading.style.display = 'none';
-                };
-
-                // Load the URL
-                iframe.src = finalUrl;
-                result.appendChild(iframe);
-            } catch (error) {
-                result.innerHTML = `Error: ${error.message}`;
+            // Create iframe with direct URL
+            const iframe = document.createElement('iframe');
+            iframe.style.width = '100%';
+            iframe.style.height = '600px';
+            iframe.style.border = 'none';
+            
+            // Use a more reliable proxy service
+            const proxyUrl = `https://webcache.googleusercontent.com/search?q=cache:${encodeURIComponent(url)}`;
+            
+            iframe.src = proxyUrl;
+            result.appendChild(iframe);
+            
+            iframe.onload = function() {
                 loading.style.display = 'none';
-            }
+            };
+            
+            iframe.onerror = function() {
+                result.innerHTML = 'Failed to load the page. Try another URL.';
+                loading.style.display = 'none';
+            };
         }
     </script>
 </body>

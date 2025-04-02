@@ -46,41 +46,75 @@
             border-radius: 4px;
             color: #856404;
         }
+        .proxy-links {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .proxy-link {
+            padding: 10px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .proxy-link:hover {
+            background: #e9ecef;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Web Proxy</h1>
-        <form onsubmit="return proxyRequest(event)">
+        <form onsubmit="return generateLinks(event)">
             <input type="url" id="url" placeholder="Enter website URL (e.g., https://example.com)" required>
-            <button type="submit">Go</button>
+            <button type="submit">Generate Proxy Links</button>
         </form>
+        <div class="proxy-links" id="proxyLinks"></div>
         <div class="note">
-            The page will open in a new tab using Internet Archive's Wayback Machine.
+            Click any of the generated links to access the site through different proxy services.
         </div>
     </div>
 
     <script>
-        function proxyRequest(event) {
+        function generateLinks(event) {
             event.preventDefault();
             const url = document.getElementById('url').value;
+            const linksDiv = document.getElementById('proxyLinks');
             
             if (!url) {
                 alert('Please enter a URL');
                 return false;
             }
 
-            // Try multiple proxy services in order
-            const proxyUrls = [
-                `https://web.archive.org/web/2/${encodeURIComponent(url)}`,
-                `https://archive.is/${encodeURIComponent(url)}`,
-                `https://archive.ph/${encodeURIComponent(url)}`
+            // List of proxy services
+            const proxyServices = [
+                {
+                    name: 'HideMe Proxy',
+                    url: `https://hide.me/en/proxy?u=${encodeURIComponent(url)}`
+                },
+                {
+                    name: 'KProxy',
+                    url: `https://kproxy.com/index.jsp?q=${encodeURIComponent(url)}`
+                },
+                {
+                    name: 'ProxySite',
+                    url: `https://www.proxysite.com/index.php?q=${encodeURIComponent(url)}`
+                },
+                {
+                    name: 'FilterBypass',
+                    url: `https://www.filterbypass.me/?url=${encodeURIComponent(url)}`
+                }
             ];
-            
-            // Open each in a new tab
-            proxyUrls.forEach(proxyUrl => {
-                window.open(proxyUrl, '_blank');
-            });
+
+            // Generate links
+            linksDiv.innerHTML = proxyServices.map(service => `
+                <a href="${service.url}" target="_blank" class="proxy-link">
+                    Open with ${service.name}
+                </a>
+            `).join('');
             
             return false;
         }

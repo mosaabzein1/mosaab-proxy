@@ -80,8 +80,8 @@
             iframe.style.height = '600px';
             iframe.style.border = 'none';
             
-            // Use a more reliable proxy service
-            const proxyUrl = `https://webcache.googleusercontent.com/search?q=cache:${encodeURIComponent(url)}`;
+            // Use a different proxy service
+            const proxyUrl = `https://proxy.hidemyass-freeproxy.com/proxy/en-ww/${encodeURIComponent(url)}`;
             
             iframe.src = proxyUrl;
             result.appendChild(iframe);

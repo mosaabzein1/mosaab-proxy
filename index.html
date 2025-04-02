@@ -51,39 +51,39 @@
 <body>
     <div class="container">
         <h1>Web Proxy</h1>
-        <input type="url" id="url" placeholder="Enter website URL (e.g., https://example.com)" required>
-        <button onclick="proxyRequest()">Go</button>
+        <form onsubmit="return proxyRequest(event)">
+            <input type="url" id="url" placeholder="Enter website URL (e.g., https://example.com)" required>
+            <button type="submit">Go</button>
+        </form>
         <div class="note">
-            The page will open in a new tab using a proxy service.
+            The page will open in a new tab using Internet Archive's Wayback Machine.
         </div>
     </div>
 
     <script>
-        function proxyRequest() {
+        function proxyRequest(event) {
+            event.preventDefault();
             const url = document.getElementById('url').value;
-
+            
             if (!url) {
                 alert('Please enter a URL');
-                return;
+                return false;
             }
 
-            // List of proxy services to try
-            const proxyServices = [
-                `https://translate.google.com/translate?sl=auto&tl=en&u=${encodeURIComponent(url)}`,
-                `https://web.archive.org/web/${encodeURIComponent(url)}`,
-                `https://archive.is/${encodeURIComponent(url)}`
+            // Try multiple proxy services in order
+            const proxyUrls = [
+                `https://web.archive.org/web/2/${encodeURIComponent(url)}`,
+                `https://archive.is/${encodeURIComponent(url)}`,
+                `https://archive.ph/${encodeURIComponent(url)}`
             ];
-
-            // Open the first proxy service in a new tab
-            window.open(proxyServices[0], '_blank');
+            
+            // Open each in a new tab
+            proxyUrls.forEach(proxyUrl => {
+                window.open(proxyUrl, '_blank');
+            });
+            
+            return false;
         }
-
-        // Also allow pressing Enter to submit
-        document.getElementById('url').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                proxyRequest();
-            }
-        });
     </script>
 </body>
 </html>

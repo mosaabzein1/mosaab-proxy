@@ -3,121 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy</title>
+    <title>Access Tool</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
+            margin: 0;
             padding: 20px;
-            background: #f5f5f5;
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .container {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        input[type="url"] {
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            max-width: 500px;
+        }
+        h1 {
+            margin: 0 0 20px 0;
+            color: #1a73e8;
+            font-size: 24px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
             font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #1a73e8;
+            outline: none;
         }
         button {
-            background: #007bff;
+            background: #1a73e8;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
+            padding: 12px 24px;
+            border-radius: 6px;
             font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
         }
         button:hover {
-            background: #0056b3;
+            background: #1557b0;
         }
-        .note {
+        .result {
             margin-top: 20px;
-            padding: 10px;
-            background: #fff3cd;
-            border: 1px solid #ffeeba;
-            border-radius: 4px;
-            color: #856404;
-        }
-        .proxy-links {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .proxy-link {
-            padding: 10px;
+            padding: 15px;
+            border-radius: 6px;
             background: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            text-decoration: none;
-            color: #007bff;
+            display: none;
         }
-        .proxy-link:hover {
-            background: #e9ecef;
+        .result a {
+            color: #1a73e8;
+            text-decoration: none;
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+        .result a:hover {
+            background: #f0f2f5;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Web Proxy</h1>
-        <form onsubmit="return generateLinks(event)">
-            <input type="url" id="url" placeholder="Enter website URL (e.g., https://example.com)" required>
-            <button type="submit">Generate Proxy Links</button>
-        </form>
-        <div class="proxy-links" id="proxyLinks"></div>
-        <div class="note">
-            Click any of the generated links to access the site through different proxy services.
+        <h1>Access Tool</h1>
+        <div class="input-group">
+            <input type="url" id="urlInput" placeholder="Enter website URL" required>
         </div>
+        <button onclick="generateLinks()">Access Site</button>
+        <div id="result" class="result"></div>
     </div>
 
     <script>
-        function generateLinks(event) {
-            event.preventDefault();
-            const url = document.getElementById('url').value;
-            const linksDiv = document.getElementById('proxyLinks');
+        function generateLinks() {
+            const url = document.getElementById('urlInput').value;
+            const result = document.getElementById('result');
             
             if (!url) {
                 alert('Please enter a URL');
-                return false;
+                return;
             }
 
-            // List of proxy services
-            const proxyServices = [
+            const encodedUrl = encodeURIComponent(url);
+            const links = [
                 {
-                    name: 'HideMe Proxy',
-                    url: `https://hide.me/en/proxy?u=${encodeURIComponent(url)}`
+                    name: '🌐 Access Method 1',
+                    url: `https://via.hypothes.is/${url}`
                 },
                 {
-                    name: 'KProxy',
-                    url: `https://kproxy.com/index.jsp?q=${encodeURIComponent(url)}`
+                    name: '🔒 Access Method 2',
+                    url: `https://webcache.googleusercontent.com/search?q=cache:${url}`
                 },
                 {
-                    name: 'ProxySite',
-                    url: `https://www.proxysite.com/index.php?q=${encodeURIComponent(url)}`
-                },
-                {
-                    name: 'FilterBypass',
-                    url: `https://www.filterbypass.me/?url=${encodeURIComponent(url)}`
+                    name: '📚 Access Method 3',
+                    url: `https://12ft.io/${url}`
                 }
             ];
 
-            // Generate links
-            linksDiv.innerHTML = proxyServices.map(service => `
-                <a href="${service.url}" target="_blank" class="proxy-link">
-                    Open with ${service.name}
-                </a>
-            `).join('');
+            result.innerHTML = links.map(link => 
+                `<a href="${link.url}" target="_blank">${link.name}</a>`
+            ).join('');
             
-            return false;
+            result.style.display = 'block';
         }
+
+        // Allow Enter key to submit
+        document.getElementById('urlInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateLinks();
+            }
+        });
     </script>
 </body>
 </html>

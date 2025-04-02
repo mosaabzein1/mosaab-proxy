@@ -81,19 +81,25 @@
             iframe.style.border = 'none';
             
             // Use a different proxy service
-            const proxyUrl = `https://proxy.hidemyass-freeproxy.com/proxy/en-ww/${encodeURIComponent(url)}`;
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}&callback=?`;
             
-            iframe.src = proxyUrl;
-            result.appendChild(iframe);
-            
-            iframe.onload = function() {
-                loading.style.display = 'none';
-            };
-            
-            iframe.onerror = function() {
-                result.innerHTML = 'Failed to load the page. Try another URL.';
-                loading.style.display = 'none';
-            };
+            // Fetch the content first
+            fetch(proxyUrl)
+                .then(response => response.text())
+                .then(data => {
+                    // Create a blob from the response
+                    const blob = new Blob([data], { type: 'text/html' });
+                    const blobUrl = URL.createObjectURL(blob);
+                    
+                    // Set the iframe source to the blob URL
+                    iframe.src = blobUrl;
+                    result.appendChild(iframe);
+                    loading.style.display = 'none';
+                })
+                .catch(error => {
+                    result.innerHTML = `Error: ${error.message}. Try another URL.`;
+                    loading.style.display = 'none';
+                });
         }
     </script>
 </body>

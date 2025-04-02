@@ -38,16 +38,13 @@
         button:hover {
             background: #0056b3;
         }
-        #result {
+        .note {
             margin-top: 20px;
-            border: 1px solid #ddd;
+            padding: 10px;
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
             border-radius: 4px;
-            min-height: 400px;
-        }
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 20px 0;
+            color: #856404;
         }
     </style>
 </head>
@@ -56,51 +53,37 @@
         <h1>Web Proxy</h1>
         <input type="url" id="url" placeholder="Enter website URL (e.g., https://example.com)" required>
         <button onclick="proxyRequest()">Go</button>
-        <div class="loading" id="loading">Loading...</div>
-        <div id="result"></div>
+        <div class="note">
+            The page will open in a new tab using a proxy service.
+        </div>
     </div>
 
     <script>
         function proxyRequest() {
             const url = document.getElementById('url').value;
-            const loading = document.getElementById('loading');
-            const result = document.getElementById('result');
 
             if (!url) {
                 alert('Please enter a URL');
                 return;
             }
 
-            loading.style.display = 'block';
-            result.innerHTML = '';
+            // List of proxy services to try
+            const proxyServices = [
+                `https://translate.google.com/translate?sl=auto&tl=en&u=${encodeURIComponent(url)}`,
+                `https://web.archive.org/web/${encodeURIComponent(url)}`,
+                `https://archive.is/${encodeURIComponent(url)}`
+            ];
 
-            // Create iframe with direct URL
-            const iframe = document.createElement('iframe');
-            iframe.style.width = '100%';
-            iframe.style.height = '600px';
-            iframe.style.border = 'none';
-            
-            // Use a different proxy service
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}&callback=?`;
-            
-            // Fetch the content first
-            fetch(proxyUrl)
-                .then(response => response.text())
-                .then(data => {
-                    // Create a blob from the response
-                    const blob = new Blob([data], { type: 'text/html' });
-                    const blobUrl = URL.createObjectURL(blob);
-                    
-                    // Set the iframe source to the blob URL
-                    iframe.src = blobUrl;
-                    result.appendChild(iframe);
-                    loading.style.display = 'none';
-                })
-                .catch(error => {
-                    result.innerHTML = `Error: ${error.message}. Try another URL.`;
-                    loading.style.display = 'none';
-                });
+            // Open the first proxy service in a new tab
+            window.open(proxyServices[0], '_blank');
         }
+
+        // Also allow pressing Enter to submit
+        document.getElementById('url').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                proxyRequest();
+            }
+        });
     </script>
 </body>
 </html>
